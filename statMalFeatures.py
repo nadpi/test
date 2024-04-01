@@ -6,7 +6,7 @@ import math
 model_features = {}
 
 #malware file
-malware_file = "/home/kali/malwares/3fe7d4a8f79c7d822fcd5b5ad97b685ff867af003f45728ba92c348dee8b586c.exe"
+malware_file = ""
 
 pe = pefile.PE(malware_file)
 
@@ -14,7 +14,7 @@ machine = pe.FILE_HEADER.Machine
 model_features["Machine"] = machine
 
 sizeOfOptionalHeader = pe.FILE_HEADER.SizeOfOptionalHeader
-model_features["SizeOfOptionalHEader"] = pe.FILE_HEADER.SizeOfOptionalHeader
+model_features["SizeOfOptionalHeader"] = pe.FILE_HEADER.SizeOfOptionalHeader
 
 characteristics = pe.FILE_HEADER.Characteristics
 model_features["Characteristics"] = characteristics
@@ -149,7 +149,7 @@ def max_section_entropy(pe):
             section_entropy = entropy
     return section_entropy
 
-model_features["SectionMaxEntropy"] = max_section_entropy(pe)
+model_features["SectionsMaxEntropy"] = max_section_entropy(pe)
 
 def get_section_raw_data_size(peSection):
     return peSection.SizeOfRawData
@@ -221,7 +221,7 @@ def sections_max_virtsize(pe):
             section_virt = virtsize
     return section_virt
 
-model_features["SectionMaxVirtualSize"] = sections_max_virtsize(pe)
+model_features["SectionMaxVirtualsize"] = sections_max_virtsize(pe)
 
 def importsNbDll(pe):
     if hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
@@ -436,16 +436,17 @@ model_features["VersionInformationSize"] = get_version_info_size(pe)
 for k,v in model_features.items():
     print(f"{k}: {v}")
 
-
-'''
+import pickle
+import os
+import sys
 if __name__ == '__main__':
 
     #Loading the classifier.pkl and features.pkl
-    clf = joblib.load('Classifier/classifier.pkl')
-    features = pickle.loads(open(os.path.join('classifier.pkl'),'rb').read())
+    clf = pickle.loads(open(os.path.join('classifier.pkl'),'rb').read())
+    features = pickle.loads(open(os.path.join('features2.pkl'),'rb').read())
 
     #extracting features from the PE file mentioned in the argument
-    data = extract_infos(sys.argv[1])
+    data = model_features
 
     #matching it with the features saved in features.pkl
     pe_features = list(map(lambda x:data[x], features))
@@ -453,5 +454,4 @@ if __name__ == '__main__':
 
     #prediciting if the PE is malicious or not based on the extracted features
     res= clf.predict([pe_features])[0]
-    print ('The file %s is %s' % (os.path.basename(sys.argv[1]),['malicious', 'legitimate'][res]))
-    '''
+    print ('The file is %s' % (['malicious', 'legitimate'][res]))
