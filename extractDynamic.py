@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import json
 
-Cuckoo_report = "/home/kali/malwares/report.json"
+Cuckoo_report = "report.json"
 with open(Cuckoo_report, 'r') as file:
     Cuckoo_report = json.load(file)
 
