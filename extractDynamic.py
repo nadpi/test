@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import json
 def DynamicExtract(Jsonfile)
-  Cuckoo_report = "report.json"
+  Cuckoo_report = Jsonfile
   with open(Cuckoo_report, 'r') as file:
       Cuckoo_report = json.load(file)
 
@@ -36,6 +36,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 if __name__ == '__main__':
 
+    model_features = DynamicExtract('report.json')
     # Load the trained PCA model
     with open(os.path.join('pca_model.pkl'), 'rb') as f:
         pca = pickle.load(f)
