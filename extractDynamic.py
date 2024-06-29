@@ -7,7 +7,8 @@ def DynamicExtract(Jsonfile)
 
   apis = []
   class_ = "UnKnown"
-
+  score = report['info']['score']
+  
   try:
       api_calls = Cuckoo_report['behavior']['apistats']
   except:
@@ -25,7 +26,7 @@ def DynamicExtract(Jsonfile)
           model_features.append(1)
       else:
           model_features.append(0)
-  return model_features
+  return model_features, score
 
 import pickle
 import os
